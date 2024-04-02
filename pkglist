@@ -1,5 +1,6 @@
 base
 base-devel
+i3-wm
 ntfs-3g
 git
 rofi
@@ -12,3 +13,16 @@ flameshot
 rxvt-unicode
 polybar
 feh
+picom
+kitty
+qbittorrent
+docker
+docker-compose
+mariadb
+nodejs
+npm
+discord
+dotnet-runtime
+dotnet-sdk
+aspnet-runtime
+nerd-fonts
