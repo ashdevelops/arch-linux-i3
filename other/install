@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+sudo pacman -Syu --noconfirm - < pkglist
+
+cp -a scripts/. /home/ash/scripts/
+cp -R wallpapers/ /home/ash/wallpapers

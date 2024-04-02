@@ -1,0 +1,13 @@
+base
+base-devel
+ntfs-3g
+git
+rofi
+blueman
+bluez
+bluez-utils
+thunar
+tumbler
+flameshot
+rxvt-unicode
+polybar
