@@ -1,5 +1,7 @@
 base
 base-devel
+xorg-server 
+xorg-xinit
 sddm
 i3-wm
 ntfs-3g
