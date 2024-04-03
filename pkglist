@@ -1,5 +1,6 @@
 base
 base-devel
+sddm
 i3-wm
 ntfs-3g
 git
