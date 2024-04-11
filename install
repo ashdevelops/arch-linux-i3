@@ -3,5 +3,12 @@ set -e
 
 sudo pacman -Syu --noconfirm - < pkglist
 
+sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+sudo systemctl enable --now mariadb.service
+
+sudo usermod -a -G input ash
+
+mkdir -p ~/scripts ~/recordings
+
 cp -a scripts/. /home/ash/scripts/
 cp -R wallpapers/ /home/ash/wallpapers
