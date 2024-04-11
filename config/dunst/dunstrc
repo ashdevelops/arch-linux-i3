@@ -1,4 +1,8 @@
 [global]
+
+gaps = true
+gap_size = 10
+
 font = Iosevka Term 11
 
 # Allow a small subset of html markup:
@@ -32,7 +36,7 @@ indicate_hidden = yes
 
 # Alignment of message text.
 # Possible values are "left", "center" and "right".
-alignment = center
+alignment = left
 
 # The frequency with wich text that is longer than the notification
 # window allows bounces back and forth.
@@ -120,13 +124,13 @@ line_height = 3
 # Draw a line of "separatpr_height" pixel height between two
 # notifications.
 # Set to 0 to disable.
-separator_height = 2
+separator_height = 0
 
 # Padding between text and separator.
-padding = 6
+padding = 9
 
 # Horizontal padding.
-horizontal_padding = 6
+horizontal_padding = 15
 
 # Define a color for the separator.
 # possible values are:
@@ -154,7 +158,7 @@ max_icon_size = 80
 # Paths to default icons.
 icon_path = /usr/share/icons/Paper/16x16/mimetypes/:/usr/share/icons/Paper/48x48/status/:/usr/share/icons/Paper/16x16/devices/:/usr/share/icons/Paper/48x48/notifications/:/usr/share/icons/Paper/48x48/emblems/
 
-frame_width = 3
+frame_width = 2
 frame_color = "#8EC07C"
 
 [shortcuts]
@@ -185,21 +189,21 @@ frame_color = "#3B7C87"
 foreground = "#3B7C87"
 background = "#191311"
 #background = "#2B313C"
-timeout = 4
+timeout = 5
 
 [urgency_normal]
 frame_color = "#5B8234"
 foreground = "#5B8234"
 background = "#191311"
 #background = "#2B313C"
-timeout = 6
+timeout = 30
 
 [urgency_critical]
 frame_color = "#B7472A"
 foreground = "#B7472A"
 background = "#191311"
 #background = "#2B313C"
-timeout = 8
+timeout = 0
 
 
 # Every section that isn't one of the above is interpreted as a rules to
