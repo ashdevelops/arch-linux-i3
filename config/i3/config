@@ -197,7 +197,7 @@ client.background       #ffffff
 gaps inner 12px
 gaps outer 12px
 
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id $HOME/scripts/polybar
 exec_always --no-startup-id $HOME/scripts/wallpaper
 
 for_window [class="^.*"] border pixel 3
