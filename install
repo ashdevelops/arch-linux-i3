@@ -24,6 +24,12 @@ timedatectl set-timezone Europe/London
 
 echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf
 
+sh -c "$(curl -fsSL raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+cp other/.zshrc /home/ash/.zshrc
+
+sudo usermod -a -G vboxusers ash
+
 git config --global user.name "ashdevelops"
 git config --global user.email "ash.smith.dev@gmail.com"
 
