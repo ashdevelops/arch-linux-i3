@@ -18,7 +18,7 @@ sudo chmod +x /home/ash/scripts/*
 sudo mkdir /mnt/storage
 
 git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
-yay -Syu jetbrains-toolbox plex-media-server aria2 docker-desktop --noconfirm
+yay -Syu jetbrains-toolbox plex-media-server aria2 --noconfirm
 
 timedatectl set-timezone Europe/London
 
