@@ -27,6 +27,7 @@ echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf
 sh -c "$(curl -fsSL raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 cp other/.zshrc /home/ash/.zshrc
+cp other/.xinitrc /home/ash/.xinitrc
 
 sudo usermod -a -G vboxusers ash
 
