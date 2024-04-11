@@ -4,7 +4,6 @@ set -e
 sudo pacman -Syu --noconfirm - < pkglist
 
 sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-sudo systemctl enable --now mariadb.service
 
 sudo usermod -a -G input ash
 
@@ -18,9 +17,20 @@ sudo chmod +x /home/ash/scripts/*
 
 sudo mkdir /mnt/storage
 
+git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+yay -Syu jetbrains-toolbox plex-media-server aria2 docker-desktop --noconfirm
+
+timedatectl set-timezone Europe/London
+
+echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf
+
+git config --global user.name "ashdevelops"
+git config --global user.email "ash.smith.dev@gmail.com"
+
+sudo systemctl enable --now bluetooth.service
+sudo systemctl enable --now plexmediaserver
+sudo systemctl enable --now mariadb.service
+
 echo "\n/dev/disk/by-uuid/eab3b3c5-7473-4308-bf3a-633def59c06c /mnt/storage auto nosuid,nodev,nofail,x-gvfs-show 0 0" | sudo tee -a /etc/fstab
 systemctl daemon-reload
 sudo mount -a
-
-git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
-yay -Syu jetbrains-toolbox plex-media-server aria2 docker-desktop --noconfirm
