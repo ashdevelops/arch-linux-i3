@@ -18,7 +18,7 @@ sudo chmod +x /home/ash/scripts/*
 sudo mkdir /mnt/storage
 
 git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
-yay -Syu jetbrains-toolbox plex-media-server aria2 --noconfirm
+yay -Syu jetbrains-toolbox plex-media-server aria2 wd719x-firmware linux-firmware-qlogic aic94xx-firmware upd72020x-fw --noconfirm
 
 timedatectl set-timezone Europe/London
 
