@@ -37,3 +37,5 @@ vlc
 dunst
 gnome-keyring
 virtualbox
+usbmuxd
+libimobiledevice
