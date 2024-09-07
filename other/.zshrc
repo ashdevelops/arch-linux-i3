@@ -12,16 +12,12 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH=$PATH:"$HOME/.local/share/JetBrains/Toolbox/scripts"
-export PATH=$PATH:"$HOME/scripts"
-export PATH=$PATH:"$HOME/.local/share/JetBrains/Toolbox/scripts"
-export PATH=$PATH:"$HOME/scripts"
+export PATH="$PATH:"$HOME/.local/share/JetBrains/Toolbox/scripts"
+export PATH="$PATH:"$HOME/scripts"
+export PATH="$PATH:$HOME/.dotnet/tools"
 
 export HABBO="/mnt/storage/dev/habbo"
 export SADIE="/mnt/storage/dev/habbo/sadie"
-
-alias sadie='f() { ./rider $SADIE/SadieEmulator/SadieEmulator.sln };f'
-
-alias open='f() { thunar $1 };f'
+export AA="/mnt/storage/dev/aa"
 
 echo ""
