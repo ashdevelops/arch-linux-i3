@@ -201,6 +201,7 @@ gaps outer 12px
 
 exec_always --no-startup-id $HOME/scripts/polybar
 exec_always --no-startup-id $HOME/scripts/wallpaper
+exec_always xautolock -time 1 -locker "i3lock 5 3"
 
 exec --no-startup-id picom -b
 
