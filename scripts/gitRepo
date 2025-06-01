@@ -1,42 +1,102 @@
 #!/bin/zsh
 
 # Creates a git repo automatically, optionally copies a local DIR to it.
+# Checks total source size excluding .gitignore files (if applicable),
+# and stops if size exceeds 100MB.
 
 set -euo pipefail
 
 if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <repoName> <description> <--private|--public>"
+  echo "Usage: $0 <repoName> <description> <--private|--public> [sourceDir]"
   exit 1
 fi
 
 REPO_NAME="$1"
 DESCRIPTION="${2:-""}"
 VISIBILITY="$3"
-SOURCE_DIR="$4"
-TARGET_DIR="/mnt/storage/dev/$1"
+SOURCE_DIR="${4:-}"
+TARGET_DIR="/mnt/storage/dev/$REPO_NAME"
+DEV="/mnt/storage/dev"
 
 if [ -z "$REPO_NAME" ]; then
-  echo "Usage: $0 <repo-name> [description] [--public]"
+  echo "Usage: $0 <repo-name> [description] [--public] [sourceDir]"
   exit 1
 fi
 
-mkdir "$DEV/$REPO_NAME"
-cd "$DEV/$REPO_NAME" || exit 1
-
-git init
-echo "# $REPO_NAME" > README.md
-
-if [[ -n "$SOURCE_DIR" && -d "$SOURCE_DIR" ]]; then
-	echo "Copying directory '$SOURCE_DIR' to $TARGET_DIR"
- 	cp -r "$SOURCE_DIR"/. $TARGET_DIR/
+# Check if target directory exists
+if [ -d "$TARGET_DIR" ]; then
+  echo "Directory '$TARGET_DIR' already exists. Using existing directory."
 else
-	echo "Error: Source directory '$SOURCE_DIR' does not exist or is not a directory."
-	exit 1
+  echo "Creating directory '$TARGET_DIR'."
+  mkdir -p "$TARGET_DIR"
 fi
 
+cd "$TARGET_DIR" || { echo "Failed to cd into $TARGET_DIR"; exit 1; }
+
+# Initialize git repo only if .git doesn't exist
+if [ -d ".git" ]; then
+  echo "Git repo already initialized in $TARGET_DIR."
+else
+  git init
+  echo "# $REPO_NAME" > README.md
+fi
+
+if [[ -n "$SOURCE_DIR" && -d "$SOURCE_DIR" ]]; then
+  MAX_SIZE_BYTES=$((200 * 1024 * 1024))  # 200 MB limit
+
+  # Function to get total size excluding gitignored files
+  get_git_aware_size() {
+    local dir="$1"
+    if [ -d "$dir/.git" ]; then
+      # If source is a git repo, sum sizes of tracked & untracked (non-ignored) files
+      cd "$dir"
+      local total=0
+      # Use git ls-files to list tracked and unignored files
+      # Note: use GNU stat on Linux; adapt for macOS below
+      local files=$(git ls-files --cached --others --exclude-standard)
+      for f in $files; do
+        if [[ -f "$f" ]]; then
+          if stat --version >/dev/null 2>&1; then
+            # GNU stat
+            size=$(stat -c%s "$f")
+          else
+            # BSD/macOS stat
+            size=$(stat -f%z "$f")
+          fi
+          total=$((total + size))
+        fi
+      done
+      echo "$total"
+      cd - >/dev/null || true
+    else
+      # Not a git repo — fallback to du size
+      du -sb "$dir" | cut -f1
+    fi
+  }
+
+  folder_size_bytes=$(get_git_aware_size "$SOURCE_DIR")
+
+  if (( folder_size_bytes > MAX_SIZE_BYTES )); then
+    echo "Error: Source directory size $(numfmt --to=iec $folder_size_bytes) exceeds max allowed size of $(numfmt --to=iec $MAX_SIZE_BYTES)."
+    exit 1
+  fi
+
+  # Only copy if source and target are different directories
+  if [[ "$SOURCE_DIR" != "$TARGET_DIR" ]]; then
+    echo "Copying directory '$SOURCE_DIR' to $TARGET_DIR"
+    cp -r "$SOURCE_DIR"/. "$TARGET_DIR"/
+  else
+    echo "Source and target directories are the same. Skipping copy."
+  fi
+else
+  if [[ -n "$SOURCE_DIR" ]]; then
+    echo "Error: Source directory '$SOURCE_DIR' does not exist or is not a directory."
+    exit 1
+  fi
+fi
 
 git add .
-git commit -m "Initial commit"
+git commit -m "Initial commit" || echo "Nothing to commit."
 
 gh repo create "$REPO_NAME" $VISIBILITY --description "$DESCRIPTION" --source=. --remote=origin --push
 
