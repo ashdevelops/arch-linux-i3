@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo systemctl enable --now dhcpd.service
+sudo modprobe -r iwlwifi
+sudo modprobe iwlwifi
+dmesg | grep iwlwifi

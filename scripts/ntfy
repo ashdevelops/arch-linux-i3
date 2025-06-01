@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# ./send_ntfy.sh <topic> "<message>" [title] [priority] [server]
+
+DEFAULT_TITLE="Notification"
+DEFAULT_PRIORITY="default"
+DEFAULT_SERVER="https://ntfy.sh"
+
+TOPIC="$1"
+MESSAGE="$2"
+TITLE="${3:-$DEFAULT_TITLE}"
+PRIORITY="${4:-$DEFAULT_PRIORITY}"
+SERVER="${5:-$DEFAULT_SERVER}"
+
+# Validate required arguments
+if [ -z "$TOPIC" ] || [ -z "$MESSAGE" ]; then
+  echo "Usage: $0 <topic> \"<message>\" [title] [priority] [server]"
+  exit 1
+fi
+
+# Send notification
+curl -s -H "Title: $TITLE" \
+        -H "Priority: $PRIORITY" \
+        -d "$MESSAGE" \
+        "$SERVER/$TOPIC"

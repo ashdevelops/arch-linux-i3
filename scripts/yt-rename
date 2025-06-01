@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Check if directory argument is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 /path/to/directory"
+  exit 1
+fi
+
+TARGET_DIR="$1"
+
+# Check if the directory exists
+if [ ! -d "$TARGET_DIR" ]; then
+  echo "Error: Directory '$TARGET_DIR' does not exist."
+  exit 1
+fi
+
+cd "$TARGET_DIR" || exit
+
+for file in ????????\ -*; do
+  # Skip if no files matched the pattern
+  [ -e "$file" ] || continue
+
+  # Extract date and rest of filename
+  datepart="${file%% -*}"        # YYYYMMDD
+  rest="${file#* - }"            # title.ext
+
+  # Make sure datepart is exactly 8 digits
+  if [[ ! "$datepart" =~ ^[0-9]{8}$ ]]; then
+    echo "Skipping '$file' (invalid date format)"
+    continue
+  fi
+
+  # Rearrange date: DDMMYY
+  yyyy=${datepart:0:4}
+  mm=${datepart:4:2}
+  dd=${datepart:6:2}
+  yy=${yyyy:2:2}
+  readable_date="${dd}${mm}${yy}"
+
+  # New filename: keeps sortable prefix
+  newname="${datepart} - ${readable_date} - ${rest}"
+
+  # Rename file (only if different)
+  if [[ "$file" != "$newname" ]]; then
+    mv -v -- "$file" "$newname"
+  fi
+done

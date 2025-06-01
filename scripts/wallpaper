@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
 RBG=$(ls ~/wallpapers | shuf -n 1)
+echo "$RBG" > /tmp/wallpaper
 feh --bg-fill $HOME/wallpapers/$RBG --bg-fill ~/wallpapers/$RBG

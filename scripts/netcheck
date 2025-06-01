@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Config
+COUNTER_FILE="/tmp/no_internet_counter.txt"
+THRESHOLD=5
+
+check_internet() {
+    ping -q -c 1 -W 2 8.8.8.8 >/dev/null 2>&1
+    return $?
+}
+
+# Ensure counter file exists
+if [ ! -f "$COUNTER_FILE" ]; then
+    echo 0 > "$COUNTER_FILE"
+fi
+
+# Read current counter value
+COUNTER=$(cat "$COUNTER_FILE")
+
+# Check internet connectivity
+if check_internet; then
+    # Internet is available; reset counter
+    echo "Internet OK. Resetting counter."
+    echo 0 > "$COUNTER_FILE"
+else
+    # No internet; increment counter
+    if [ "$COUNTER" -eq 0 ]; then
+        echo "First occurence of no network detected"
+    fi
+
+    COUNTER=$((COUNTER + 1))
+    echo "$COUNTER" > "$COUNTER_FILE"
+    echo "No internet. Counter increased to $COUNTER."
+
+    # Check if counter exceeds threshold
+    if [ "$COUNTER" -ge "$THRESHOLD" ]; then
+        echo "Threshold reached. Rebooting system..."
+        /sbin/reboot
+    fi
+fi
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sleep 5
+bluetoothctl connect D3:57:95:58:B6:05
+bluetoothctl connect EC:81:93:F8:CB:C1

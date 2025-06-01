@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Define the API URL
+API_URL="https://web-api.nordvpn.com/v1/ips/info"
+
+# Send a GET request to the API and store the response
+response=$(curl -s $API_URL)
+
+# Use jq to parse the JSON response and check if the 'protected' field is true
+protected=$(echo $response | jq -r '.protected')
+
+# Check if the 'protected' value is true
+if [ "$protected" == "true" ]; then
+    echo " VPN On "
+else
+    echo " VPN Off "
+fi

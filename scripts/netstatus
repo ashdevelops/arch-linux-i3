@@ -1,0 +1,12 @@
+#!/bin/bash
+
+check_internet() {
+    ping -q -c 1 -W 2 8.8.8.8 >/dev/null 2>&1
+    return $?
+}
+
+if check_internet; then
+    echo "%{B#50993d} Up %{B-}"
+else
+  	echo "%{B#db0223} Offline %{B-}"
+fi

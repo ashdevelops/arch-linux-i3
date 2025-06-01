@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if ! pgrep -x firefox > /dev/null; then
+    echo "[Auto] Firefox not running. Updating..."
+    /usr/bin/pacman -Sy --noconfirm firefox
+else
+    echo "[Auto] Firefox is running. Skipping update."
+fi

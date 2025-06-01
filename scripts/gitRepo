@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+# Creates a git repo automatically, optionally copies a local DIR to it.
+
+set -euo pipefail
+
+if [ "$#" -lt 3 ]; then
+  echo "Usage: $0 <repoName> <description> <--private|--public>"
+  exit 1
+fi
+
+REPO_NAME="$1"
+DESCRIPTION="${2:-""}"
+VISIBILITY="$3"
+SOURCE_DIR="$4"
+TARGET_DIR="/mnt/storage/dev/$1"
+
+if [ -z "$REPO_NAME" ]; then
+  echo "Usage: $0 <repo-name> [description] [--public]"
+  exit 1
+fi
+
+mkdir "$DEV/$REPO_NAME"
+cd "$DEV/$REPO_NAME" || exit 1
+
+git init
+echo "# $REPO_NAME" > README.md
+
+if [[ -n "$SOURCE_DIR" && -d "$SOURCE_DIR" ]]; then
+	echo "Copying directory '$SOURCE_DIR' to $TARGET_DIR"
+ 	cp -r "$SOURCE_DIR"/. $TARGET_DIR/
+else
+	echo "Error: Source directory '$SOURCE_DIR' does not exist or is not a directory."
+	exit 1
+fi
+
+
+git add .
+git commit -m "Initial commit"
+
+gh repo create "$REPO_NAME" $VISIBILITY --description "$DESCRIPTION" --source=. --remote=origin --push
+
+echo "✅ Repository '$REPO_NAME' created and pushed to GitHub."

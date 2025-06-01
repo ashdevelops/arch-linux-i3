@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e
+
+DIR_PATH="$1"
+BUCKET_NAME="$2"
+S3_PREFIX="$3"
+
+# Check for required arguments
+if [ -z "$DIR_PATH" ] || [ -z "$BUCKET_NAME" ]; then
+  echo "Usage: $0 /path/to/dir bucket-name [s3-key-prefix]"
+  exit 1
+fi
+
+# Resolve directory name and create zip file
+DIR_NAME=$(basename "$DIR_PATH")
+ZIP_NAME="${DIR_NAME}_$(date +%Y%m%d_%H%M%S).zip"
+
+echo "Zipping directory: $DIR_PATH"
+zip -r -9 "$ZIP_NAME" "$DIR_PATH/com.plexapp.plugins.library.db"
+
+# Define S3 key
+if [ -n "$S3_PREFIX" ]; then
+  S3_KEY="${S3_PREFIX%/}/$ZIP_NAME"
+else
+  S3_KEY="$ZIP_NAME"
+fi
+
+# Upload to S3
+echo "Uploading $ZIP_NAME to s3://$BUCKET_NAME/$S3_KEY"
+aws s3 cp "$ZIP_NAME" "s3://$BUCKET_NAME/$S3_KEY"
+
+echo "Upload complete."
+
+aws s3 ls "s3://$BUCKET_NAME/$S3_PREFIX" --recursive | while read -r line; do
+  file=$(echo "$line" | awk '{print $4}')
+  # Skip the newly uploaded file
+  if [[ "$file" != "$S3_KEY" ]]; then
+    echo "Deleting $file"
+    aws s3 rm "s3://$BUCKET_NAME/$file"
+  fi
+done
+
+rm "$ZIP_NAME"

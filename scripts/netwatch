@@ -1,0 +1,8 @@
+#!/bin/bash
+
+INTERVAL=20
+
+while true; do
+    /home/ash/scripts/netcheck
+    sleep $INTERVAL
+done
